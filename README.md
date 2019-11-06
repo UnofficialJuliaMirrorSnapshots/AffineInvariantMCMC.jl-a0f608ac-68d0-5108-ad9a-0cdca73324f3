@@ -1,13 +1,10 @@
 AffineInvariantMCMC
 ===================
 
-AffineInvariantMCMC performs Bayesian sampling using Goodman & Weare's Affine Invariant Markov chain Monte Carlo (MCMC) Ensemble sampler.
+AffineInvariantMCMC performs Bayesian sampling using Goodman & Weare's Affine Invariant Markov Chain Monte Carlo (MCMC) Ensemble sampler.
 AffineInvariantMCMC is a module of [MADS](http://madsjulia.github.io/Mads.jl).
 Goodman & Weare's algorithm implementation in Python is called [Emcee](http://dan.iel.fm/emcee).
 
-[![AffineInvariantMCMC](http://pkg.julialang.org/badges/AffineInvariantMCMC_0.5.svg)](http://pkg.julialang.org/?pkg=AffineInvariantMCMC&ver=0.5)
-[![AffineInvariantMCMC](http://pkg.julialang.org/badges/AffineInvariantMCMC_0.6.svg)](http://pkg.julialang.org/?pkg=AffineInvariantMCMC&ver=0.6)
-[![AffineInvariantMCMC](http://pkg.julialang.org/badges/AffineInvariantMCMC_0.7.svg)](http://pkg.julialang.org/?pkg=AffineInvariantMCMC&ver=0.7)
 [![Build Status](https://travis-ci.org/madsjulia/AffineInvariantMCMC.jl.svg?branch=master)](https://travis-ci.org/madsjulia/AffineInvariantMCMC.jl)
 [![Coverage Status](https://coveralls.io/repos/madsjulia/AffineInvariantMCMC.jl/badge.svg?branch=master)](https://coveralls.io/r/madsjulia/AffineInvariantMCMC.jl?branch=master)
 
@@ -48,6 +45,42 @@ chain, llhoodvals = AffineInvariantMCMC.sample(llhood, numwalkers, x0, burnin, 1
 chain, llhoodvals = AffineInvariantMCMC.sample(llhood, numwalkers, chain[:, :, end], numsamples_perwalker, thinning)
 flatchain, flatllhoodvals = AffineInvariantMCMC.flattenmcmcarray(chain, llhoodvals)
 ```
+
+Comparison
+----------
+
+The figures below compare predicted marginal and joint posterior PDF's (probability density functions) using Classical vs. Affine Invariant MCMC for the same number of functional evaluations (in this case 1,000,000).
+
+The synthetic problem tested below is designed to have a very complex structure.
+The Classical MCMC clearly fails to characterize sufficiently well the  posterior PDF's.
+
+- Classical MCMC ![ClassicalMCMC](/examples/ClassicalMCMC_w1000000.png)
+- Affine Invariant MCMC ![AffineInvariantMCMC](/examples/AffineInvariantMCMC_w1000000.png)
+
+The codes applied to perform these analyses are available here:
+
+- [Classical MCMC](https://github.com/madsjulia/Mads.jl/blob/master/examples/model_analysis/bayes_weight_analsis.jl)
+- [Affine Invariant MCMC](https://github.com/madsjulia/Mads.jl/blob/master/examples/model_analysis/emcee_weight_analsis.jl)
+
+Parallelization
+---------------
+
+AffineInvariantMCMC can be executed efficiently in parallel using existing distributed network capabilities.
+
+For more information, check out our Julia module [RobustPmap](https://github.com/madsjulia/RobustPmap.jl).
+
+Restarts
+--------
+
+AffineInvariantMCMC analyses can be performed utilizing extremely efficient restarts.
+
+Typically, the AffineInvariantMCMC runs require large number of functional (model) evaluations which may take substantial computational time.
+Occasionally, the AffineInvariantMCMC runs may crash due to external issues (e.g., network/computer/disk failures).
+Furthermore, AffineInvariantMCMC runs may require more time than the allowed allocation time on existing HPC cluster queues.
+In all these cases, the AffineInvariantMCMC runs needs to be restarted.
+Our codes allow are very efficient restarts with very minimal overhead and without re-execution of completed functional (model) evaluations.
+
+For more information, check out our Julia module [ReusableFunctions](https://github.com/madsjulia/ReusableFunctions.jl).
 
 Documentation
 -------------
